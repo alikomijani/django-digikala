@@ -19,7 +19,7 @@ class Product(models.Model):
 
 class Category(models.Model):
     name = models.CharField(_("Name"), max_length=50)
-    slug = models.SlugField(_("Slug"))
+    slug = models.SlugField(_("Slug"), unique=True, db_index=True)
     description = models.TextField(_("Description"))
     icon = models.ImageField(
         _("Icon"), upload_to='category_images', null=True, blank=True)
@@ -62,7 +62,7 @@ class Image(models.Model):
     name = models.CharField(_("Name"), max_length=50)
     alt = models.CharField(_("Alternative Text"), max_length=100)
     product = models.ForeignKey("Product",
-                                verbose_name=_("Image"),
+                                verbose_name=_("Product"),
                                 on_delete=models.CASCADE)
     image = models.ImageField(_("Image"), upload_to='products',)
     is_default = models.BooleanField(_("Is default image?"), default=False)
