@@ -5,11 +5,16 @@ from .models import Product, Category, Comment, Question, Answer,\
 # Register your models here.
 
 
+class ProductImageInline(admin.TabularInline):
+    model = Image
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'en_name', 'name', 'category']
     list_filter = ['category']
     search_fields = ['en_name', 'name']
+    inlines = (ProductImageInline,)
 
 
 @admin.register(Category)
