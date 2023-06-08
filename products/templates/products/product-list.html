@@ -1,9 +1,13 @@
 {% extends 'base/base.html' %} {%block title%} لیست کالاها {%endblock title%}
 {%block main %}
+<form action="." method="get">
+  <input type="text" name="q">
+  <input type="submit" value="search">
+</form>
 <ul>
   {% for p in products %}
   <li>
-    <a href="/products/{{p.id}}/">
+    <a href="{% url 'products:product-single' p.id %}">
       <div>
         <h2>{{p.name}}</h2>
       </div>
