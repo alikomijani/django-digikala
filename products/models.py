@@ -108,7 +108,8 @@ class Answer(models.Model):
 class ProductOption(models.Model):
     product = models.ForeignKey("Product",
                                 verbose_name=_("Product"),
-                                on_delete=models.CASCADE
+                                on_delete=models.CASCADE,
+                                related_name='product_options'
                                 )
     name = models.CharField(_("Attribute"), max_length=200)
     value = models.CharField(_("Value"), max_length=200)

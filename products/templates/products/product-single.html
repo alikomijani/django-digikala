@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %} {% block title %}
+{{product.name}} {% endblock title %}{% block main %}
+<h1>{{ product.name }}</h1>
+<p>{{ product.en_name }}</p>
+<p>{{ product.description }}</p>
+<hr />
+<div>
+  <ul>
+    {% for option in product.product_options.all %}
+    <li style="display: flex">
+      <div>{{ option.name }}</div>
+      :
+      <div>{{ option.value }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<div>
+  {% for image in product.image_set.all %}
+  <img src="{{ image.image.url }}" alt="{{image.alt}}" />
+  {% endfor %}
+</div>
+
+{% endblock main %}
