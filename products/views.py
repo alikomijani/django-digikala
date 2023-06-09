@@ -23,8 +23,8 @@ def product_list_view(request):
 
 def product_detail_view(request, pk):
     p = get_object_or_404(Product, pk=pk)
-    print(p.default_image.image.url)
-    context = {"product": p}
+    seller_prices = p.seller_prices.all()
+    context = {"product": p, "seller_prices": seller_prices}
     return render(
         template_name='products/product_detail.html',
         request=request,

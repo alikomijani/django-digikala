@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Product, Category, Comment, Question, Answer,\
-    Image, ProductOption, ProductPrice
+    Image, ProductOption, SellerProductPrice
 
 # Register your models here.
 
@@ -16,7 +16,7 @@ class ProductOptionInline(admin.TabularInline):
 
 
 class ProductPriceInline(admin.TabularInline):
-    model = ProductPrice
+    model = SellerProductPrice
     extra = 1
 
 

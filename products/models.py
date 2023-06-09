@@ -155,7 +155,7 @@ class ProductOption(models.Model):
 class SellerProductPrice(models.Model):
     product = models.ForeignKey("Product",
                                 verbose_name=_("Product"),
-                                related_name='product_sellers',
+                                related_name='seller_prices',
                                 on_delete=models.CASCADE
                                 )
     seller = models.ForeignKey(

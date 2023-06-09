@@ -52,15 +52,19 @@
       </div>
     </div>
     <div id="product-sellers" class="col-12">
+      {% for s in seller_prices %}
       <div class="row">
         <div class="col-4">
           <div class="product-seller">
-            فوکالا شهرک غرب<br /><span>رضایت خرید: 98 درصد</span>
+            <div>{{ s.seller.name }}</div>
+            <span>رضایت خرید: 98 درصد</span>
           </div>
         </div>
         <div class="col-4">
           <div class="product-price">
-            <div class="product-price"><span>7,000 تومان</span></div>
+            <div class="product-price">
+              <span>{{s.price}} تومان</span>
+            </div>
           </div>
         </div>
         <div class="col-4">
@@ -69,23 +73,9 @@
           </button>
         </div>
       </div>
-      <div class="row">
-        <div class="col-4">
-          <div class="product-seller">
-            دریانی شهرک غرب<br /><span>رضایت خرید: 98 درصد</span>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="product-price">
-            <div class="product-price"><span>7,000 تومان</span></div>
-          </div>
-        </div>
-        <div class="col-4">
-          <button href="#" class="btn btn-cart">
-            <i class="fas fa-plus"></i> افزودن به سبد
-          </button>
-        </div>
-      </div>
+      {% endfor %}
+
+
     </div>
   </div>
 </div>
