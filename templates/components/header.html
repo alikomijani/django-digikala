@@ -1,0 +1,155 @@
+{% load static %}
+<header>
+    <nav id="sidemenu" class="sidebar">
+        <div class="dismiss">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+
+        <div class="sidebar-header">
+            <h3><a class="navbar-brand p-0 m-0" href="#"><img src="{% static 'images/fookala-farsi.svg' %}" width="115"
+                        height="36"></a>
+            </h3>
+        </div>
+
+        <ul class="p-0 components">
+            <p>سوپر مارکت سریع</p>
+            <li class="active">
+                <a href="#home">صفحه اصلی</a>
+            </li>
+            <li>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">انواع آشامیدنی</a>
+                <ul class="collapse p-0" id="pageSubmenu">
+                    <li>
+                        <a href="#">نوشیدنی گرم</a>
+                    </li>
+                    <li>
+                        <a href="#">نوشیدنی سرد</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">درباره فوکالا</a>
+            </li>
+            <li>
+                <a href="#">تماس با فوکالا</a>
+            </li>
+        </ul>
+    </nav>
+    <nav class="navbar navbar-light bg-light fixed-top rtl px-2">
+        <div class="container px-0 px-lg-1">
+            <button id="sidemenuCollapse" class="navbar-toggler" type="button" title="مشاهده منو">
+                <span class="navbar-toggler-icon">
+                </span>
+            </button>
+            <a class="navbar-brand p-0 m-0" href="#"><img src="{% static 'images/fookala-farsi.svg' %}" width="115"
+                    height="36"></a>
+            <div class="searchform mx-auto w-50 w-60-lg px-0 px-lg-1">
+                <form action="/search" data-action="" id="frmSearch" autocomplete="off" class="search-box">
+                    <div class="input-group">
+                        <input autocomplete="off" name="keyword" type="text" id="search-field" class="form-control"
+                            placeholder="برند، کالا و یا دسته بندی مورد نظر">
+                        <div class="input-group-append">
+                            <button class="btn btn-gradient-primary" type="submit"><i
+                                    class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="search-result search-box-dropdown mt-8"></div>
+                </form>
+            </div>
+            <div class="nav-btn">
+                <button id="location" class="navbar-toggler location-btn" type="button" title="تعیین موقعیت">
+                    <span class="cart-toggler-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                </button>
+                <button id="account" class="navbar-toggler account-btn" type="button" title="محیط کاربری">
+                    <span class="cart-toggler-icon">
+                        <i class="fas fa-user"></i>
+                    </span>
+                </button>
+                <button id="minicartCollapse" class="navbar-toggler mini-cart" type="button" title="مشاهده سبد خرید">
+                    <span class="cart-toggler-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </span>
+                    <span class="cart-total">14</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <nav id="minicart" class="sidebar">
+        <div class="dismiss">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="sidebar-header">
+            <h3>سبد خرید</h3>
+        </div>
+        <div class="row m-0 totalcart total">
+            <div class="col-6 text-right">مجموع خرید:</div>
+            <div class="col-6 text-left total-value">25000 تومان</div>
+        </div>
+        <div class="row m-0 totaloff total">
+            <div class="col-6 text-right">مجموع تخفیف:</div>
+            <div class="col-6 text-left total-value">1000 تومان</div>
+        </div>
+        <ul class="p-0 components">
+            <li>
+                <div class="product-removal">
+                    <button class="remove-product">
+                        <i class="fas fa-window-close jhfg"></i>
+                    </button>
+                </div>
+                <a href="#" title=""><img src="{% static 'images/products/1.jpg' %}" width="70" height="70" /></a>
+                <div class="product-title mb-1"><a href="#" title="">دستمال کاغذی سافت‌لن</a></div>
+                <div class="product-price"><del>126,000</del><br><span>170,000 تومان</span></div>
+                <div class="product-quantity">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-left-minus btn btn-danger btn-number"
+                                data-type="minus" data-field="">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </span>
+                        <input type="text" class="quantity" name="quantity" class="form-control input-number" value="10"
+                            min="1" max="100">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-right-plus btn btn-success btn-number"
+                                data-type="plus" data-field="">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="product-removal">
+                    <button class="remove-product">
+                        <i class="fas fa-window-close jhfg"></i>
+                    </button>
+                </div>
+                <a href="#" title=""><img src="{% static 'images/products/2.jpg' %}" width="70" height="70" /></a>
+                <div class="product-title mb-1"><a href="#" title="">دستمال کاغذی سافت‌لن</a></div>
+                <div class="product-price"><del>126,000</del><br><span>170,000 تومان</span></div>
+                <div class="product-quantity">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-left-minus btn btn-danger btn-number"
+                                data-type="minus" data-field="">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </span>
+                        <input type="text" class="quantity" name="quantity" class="form-control input-number" value="10"
+                            min="1" max="100">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-right-plus btn btn-success btn-number"
+                                data-type="plus" data-field="">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <button class="checkout">ثبت سفارش <i class="fas fa-credit-card"></i></button>
+    </nav>
+
+</header>

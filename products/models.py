@@ -1,3 +1,4 @@
+from typing import Iterable, Optional
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -12,6 +13,10 @@ class Product(models.Model):
                                  verbose_name=_("Category"),
                                  on_delete=models.RESTRICT
                                  )
+
+    @property
+    def default_image(self):
+        return self.image_set.filter(is_default=True).first()
 
     def __str__(self):
         return f"{self.id} {self.name}"

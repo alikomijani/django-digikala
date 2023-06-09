@@ -13,6 +13,7 @@ def product_list_view(request):
     page_size = 10
     products = query[(page-1) * page_size:page*page_size]
     context = {"products": products}
+
     return render(
         template_name='products/product-list.html',
         request=request,
@@ -22,6 +23,7 @@ def product_list_view(request):
 
 def product_single_view(request, product_id):
     p = get_object_or_404(Product, id=product_id)
+    print(p.default_image.image.url)
     context = {"product": p}
     return render(
         template_name='products/product-single.html',
