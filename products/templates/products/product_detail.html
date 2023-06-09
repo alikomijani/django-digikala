@@ -5,7 +5,12 @@
   <div class="row">
     <div id="page-content" class="col-12">
       <div id="breadcrump" class="row px-3">
-        فوکالا / لوازم بهداشتی / دستمال کاغذی
+        <ul>
+          <li><a href="/">فوکالا</a></li>
+          {% for category in product.categories_list %}
+          <li><a href="/">{{category.name}}</a></li>
+          {% endfor %}
+        </ul>
       </div>
       <div id="product-single" class="row">
         <div class="product-image col-12 col-md-6 col-lg-4 p-0">

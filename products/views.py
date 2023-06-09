@@ -21,12 +21,12 @@ def product_list_view(request):
     )
 
 
-def product_single_view(request, product_id):
-    p = get_object_or_404(Product, id=product_id)
+def product_detail_view(request, pk):
+    p = get_object_or_404(Product, pk=pk)
     print(p.default_image.image.url)
     context = {"product": p}
     return render(
-        template_name='products/product-single.html',
+        template_name='products/product_detail.html',
         request=request,
         context=context
     )
