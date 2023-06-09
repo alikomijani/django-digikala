@@ -6,8 +6,11 @@ from django.urls import reverse
 
 class Brand(models.Model):
     name = models.CharField(_("Name"), max_length=150)
-    en_name = models.CharField(_("Name"), max_length=150)
+    en_name = models.CharField(_("English Name"), max_length=150)
     slug = models.SlugField(_("slug"))
+
+    def __str__(self) -> str:
+        return self.slug
 
 
 class Product(models.Model):

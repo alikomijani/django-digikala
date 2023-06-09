@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Product, Category, Comment, Question, Answer,\
-    Image, ProductOption, SellerProductPrice
+    Image, ProductOption, SellerProductPrice, Brand
 
 # Register your models here.
 
@@ -47,4 +47,14 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
     pass

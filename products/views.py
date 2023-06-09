@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product
-
+from .models import Product, SellerProductPrice, Comment
+from django.db.models import Min, Max
 # Create your views here.
 
 
@@ -23,8 +23,21 @@ def product_list_view(request):
 
 def product_detail_view(request, pk):
     p = get_object_or_404(Product, pk=pk)
+    # s = p.seller_prices.all().values('id').annotate(
+    #     min=Min('update_at'))
+    # print(s)
+    # print(d)
+    if request.method == "POST":
+        comment = Comment.objects.create(
+            user_email=request.POST.get("user_email", ''),
+            title=request.POST.get("title", ''),
+            text=request.POST.get("text", ''),
+            rate=int(request.POST.get("rate", 0)),
+            product=p
+        )
     seller_prices = p.seller_prices.all()
-    context = {"product": p, "seller_prices": seller_prices}
+    context = {"product": p, "seller_prices": seller_prices,
+               "comment_counts": p.comment_set.all().count()}
     return render(
         template_name='products/product_detail.html',
         request=request,

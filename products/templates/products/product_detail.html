@@ -14,20 +14,18 @@
       </div>
       <div id="product-single" class="row">
         <div class="product-image col-12 col-md-6 col-lg-4 p-0">
-
           <img class="slide-item" src="{{ product.default_image.image.url }}" alt="{{ product.name }}" />
-
         </div>
         <div class="product-data col-12 col-md-6 col-lg-4">
           <h1 class="product-title">{{ product.name }}</h1>
           <div class="product-meta row">
             <span class="star-rate col-6"><i class="fas fa-star"></i> امتیاز: 3.9 از 5</span>
-            <span class="user-comment-count col-6">45 دیدگاه کاربران</span>
+            <span class="user-comment-count col-6">{{comment_counts}} دیدگاه کاربران</span>
             <span class="product-category col-6">دسته بندی:
               <a href="#" title="دستمال کاغذی">
                 {{product.category.name}}
               </a></span>
-            <span class="product-brand col-6">برند: <a href="#" title="نانسی">نانسی</a></span>
+            <span class="product-brand col-6">برند: <a href="#" title="نانسی">{{ product.brand.name }}</a></span>
             <div class="product-description">
               <p>{{ product.description }}</p>
             </div>
@@ -74,7 +72,39 @@
         </div>
       </div>
       {% endfor %}
-
+    </div>
+    <div id="product-comments" class="col-12">
+      <div class="row">
+        <div class="col-12">
+          <form action="" method="post">
+            {% csrf_token %}
+            <div>
+              <label for="email_input">ایمیل</label>
+              <input id="email_input" type="email" name="user_email" required>
+            </div>
+            <div>
+              <label for="comment_title">عنوان</label>
+              <input id="comment_title" type="text" name="title">
+            </div>
+            <div>
+              <label for="comment_rate">امتیاز</label>
+              <input id="comment_rate" type="number" name="rate">
+            </div>
+            <div>
+              <label for="comment_text">متن نظر</label>
+              <textarea name="text" id="comment_text" cols="30" rows="10"></textarea>
+            </div>
+            <input type="submit" value="ثبت نظر">
+          </form>
+        </div>
+        {% for comment in product.comment_set.all %}
+        <div class="col-12">
+          <h5>{{comment.title}}</h5>
+          <span>{{comment.user_email}}</span>
+          <p>{{comment.text}}</p>
+        </div>
+        {% endfor %}
+      </div>
 
     </div>
   </div>
