@@ -35,7 +35,11 @@ def product_detail_view(request, pk):
             rate=int(request.POST.get("rate", 0)),
             product=p
         )
-    seller_prices = p.seller_prices.all()
+    seller_prices = SellerProductPrice.objects.raw(
+        f"""select * from products_sellerproductprice 
+        where product_id = {p.id}
+        group by seller_id
+        having Max(update_at)""")
     context = {"product": p, "seller_prices": seller_prices,
                "comment_counts": p.comment_set.all().count()}
     return render(
