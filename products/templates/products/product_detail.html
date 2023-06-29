@@ -1,112 +1,102 @@
-{% extends 'base/base.html' %} {% block title %} {{product.name}}
-{% endblock title %}{% block main %}
-
-<div class="container">
-  <div class="row">
-    <div id="page-content" class="col-12">
-      <div id="breadcrump" class="row px-3">
-        <ul>
-          <li><a href="/">فوکالا</a></li>
-          {% for category in product.categories_list %}
-          <li><a href="/">{{category.name}}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-      <div id="product-single" class="row">
-        <div class="product-image col-12 col-md-6 col-lg-4 p-0">
-          <img class="slide-item" src="{{ product.default_image.image.url }}" alt="{{ product.name }}" />
+{% extends 'base/base.html' %}
+{% block title %}
+  {{ product.name }}
+{% endblock title %}
+{% block main %}
+  <div class="container">
+    <div class="row">
+      <div id="page-content" class="col-12">
+        <div id="breadcrump" class="row px-3">
+          <ul>
+            <li>
+              <a href="/">فوکالا</a>
+            </li>
+            {% for category in product.categories_list %}
+              <li>
+                <a href="/">{{ category.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
-        <div class="product-data col-12 col-md-6 col-lg-4">
-          <h1 class="product-title">{{ product.name }}</h1>
-          <div class="product-meta row">
-            <span class="star-rate col-6"><i class="fas fa-star"></i> امتیاز: 3.9 از 5</span>
-            <span class="user-comment-count col-6">{{comment_counts}} دیدگاه کاربران</span>
-            <span class="product-category col-6">دسته بندی:
-              <a href="#" title="دستمال کاغذی">
-                {{product.category.name}}
-              </a></span>
-            <span class="product-brand col-6">برند: <a href="#" title="نانسی">{{ product.brand.name }}</a></span>
-            <div class="product-description">
-              <p>{{ product.description }}</p>
+        <div id="product-single" class="row">
+          <div class="product-image col-12 col-md-6 col-lg-4 p-0">
+            <img class="slide-item"
+                 src="{{ product.default_image.image.url }}"
+                 alt="{{ product.name }}" />
+          </div>
+          <div class="product-data col-12 col-md-6 col-lg-4">
+            <h1 class="product-title">{{ product.name }}</h1>
+            <div class="product-meta row">
+              <span class="star-rate col-6"><i class="fas fa-star"></i> امتیاز: 3.9 از 5</span>
+              <span class="user-comment-count col-6">{{ comment_counts }} دیدگاه کاربران</span>
+              <span class="product-category col-6">دسته بندی:
+                <a href="#" title="دستمال کاغذی">{{ product.category.name }}</a></span>
+              <span class="product-brand col-6">برند: <a href="#" title="نانسی">{{ product.brand.name }}</a></span>
+              <div class="product-description">
+                <p>{{ product.description }}</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="product-add-cart col-12 col-lg-4">
-          <div class="box-wrap">
-            <div class="product-seller">
-              فروشنده محصول: فوکالا<br /><span>رضایت خرید: 98 درصد</span>
-            </div>
-            <div class="product-guarantee">
-              گارانتی اصالت و سلامت فیزیکی کالا
-            </div>
-            <div class="product-price">
-              قیمت: <del>7,000</del> <span>7,000 تومان</span>
-            </div>
-            <button href="#" class="btn btn-cart">
-              <i class="fas fa-plus"></i> افزودن به سبد
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="product-sellers" class="col-12">
-      {% for s in seller_prices %}
-      <div class="row">
-        <div class="col-4">
-          <div class="product-seller">
-            <div>{{ s.seller.name }}</div>
-            <span>رضایت خرید: 98 درصد</span>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="product-price">
-            <div class="product-price">
-              <span>{{s.price}} تومان</span>
+          <div class="product-add-cart col-12 col-lg-4">
+            <div class="box-wrap">
+              <div class="product-seller">
+                فروشنده محصول: فوکالا
+                <br />
+                <span>رضایت خرید: 98 درصد</span>
+              </div>
+              <div class="product-guarantee">گارانتی اصالت و سلامت فیزیکی کالا</div>
+              <div class="product-price">
+                قیمت: <del>7,000</del> <span>7,000 تومان</span>
+              </div>
+              <button href="#" class="btn btn-cart">
+                <i class="fas fa-plus"></i> افزودن به سبد
+              </button>
             </div>
           </div>
-        </div>
-        <div class="col-4">
-          <button href="#" class="btn btn-cart">
-            <i class="fas fa-plus"></i> افزودن به سبد
-          </button>
         </div>
       </div>
-      {% endfor %}
-    </div>
-    <div id="product-comments" class="col-12">
-      <div class="row">
-        <div class="col-12">
-          <form action="" method="post">
-            {% csrf_token %}
-            <div>
-              <label for="email_input">ایمیل</label>
-              <input id="email_input" type="email" name="user_email" required>
+      <div id="product-sellers" class="col-12">
+        {% for s in seller_prices %}
+          <div class="row">
+            <div class="col-4">
+              <div class="product-seller">
+                <div>{{ s.seller.name }}</div>
+                <span>رضایت خرید: 98 درصد</span>
+              </div>
             </div>
-            <div>
-              <label for="comment_title">عنوان</label>
-              <input id="comment_title" type="text" name="title">
+            <div class="col-4">
+              <div class="product-price">
+                <div class="product-price">
+                  <span>{{ s.price }} تومان</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <label for="comment_rate">امتیاز</label>
-              <input id="comment_rate" type="number" name="rate">
+            <div class="col-4">
+              <button href="#" class="btn btn-cart">
+                <i class="fas fa-plus"></i> افزودن به سبد
+              </button>
             </div>
-            <div>
-              <label for="comment_text">متن نظر</label>
-              <textarea name="text" id="comment_text" cols="30" rows="10"></textarea>
-            </div>
-            <input type="submit" value="ثبت نظر">
-          </form>
-        </div>
-        {% for comment in product.comment_set.all %}
-        <div class="col-12">
-          <h5>{{comment.title}}</h5>
-          <span>{{comment.user_email}}</span>
-          <p>{{comment.text}}</p>
-        </div>
+          </div>
         {% endfor %}
       </div>
-
+      <div id="product-comments" class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <form method="post">
+              {% csrf_token %}
+              {{ form.as_div }}
+              <input type="submit" value="submit">
+            </form>
+          </div>
+          {% for comment in comments %}
+            <div class="col-12">
+              <h5>{{ comment.title }}</h5>
+              <span>{{ comment.user_email }}</span>
+              <p>{{ comment.text }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
-</div>
 {% endblock main %}

@@ -57,4 +57,4 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'product', 'rate', 'title']

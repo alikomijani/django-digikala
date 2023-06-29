@@ -78,7 +78,7 @@ class Comment(models.Model):
     text = models.TextField(_("Text"))
     product = models.ForeignKey("Product",
                                 verbose_name=_("Product"),
-                                on_delete=models.CASCADE
+                                on_delete=models.CASCADE,
                                 )
     rate = models.PositiveSmallIntegerField(_("Rate"))
     user_email = models.EmailField(_("Email"), max_length=254)

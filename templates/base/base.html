@@ -1,232 +1,226 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="theme-color" content="#ef5661" />
-    <title>{% block title %}سوپر مارکت آنلاین فوکالا{% endblock title %}</title>
+    <title>
+      {% block title %}
+        سوپر مارکت آنلاین فوکالا
+      {% endblock title %}
+    </title>
     {% block meta %}
-    <meta
-      name="description"
-      content="تجربه خرید آنلاین از سوپرمارکت در سریعترین زمان"
-    />
-    <meta name="author" content="Ali komijani" />
-
+      <meta name="description"
+            content="تجربه خرید آنلاین از سوپرمارکت در سریعترین زمان" />
+      <meta name="author" content="Ali komijani" />
     {% endblock meta %}
-
     <link href="{% static 'images/webramz.svg' %}" rel="shortcut icon" />
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     <link href="{% static 'css/owl.carousel.min.css' %}" rel="stylesheet" />
-    <link
-      href="{% static 'css/jquery.mCustomScrollbar.min.css' %}"
-      rel="stylesheet"
-    />
+    <link href="{% static 'css/jquery.mCustomScrollbar.min.css' %}"
+          rel="stylesheet" />
     <link href="{% static 'css/animate.min.css' %}" rel="stylesheet" />
     <link href="{% static 'css/style.css' %}" rel="stylesheet" />
-
     <!-- Font Awesome JS -->
     <script defer src="{% static 'js/solid.js' %}"></script>
     <script defer src="{% static 'js/fontawesome.js' %}"></script>
   </head>
-
   <body>
-    {% include 'components/header.html' %}
+    {% include "components/header.html" %}
     <!-- Page Content -->
     <div id="content">
-      {% block main %}{% endblock main %} {% include 'components/footer.html' %}
+      {% block main %}
+      {% endblock main %}
+      {% include "components/footer.html" %}
     </div>
-
     <!-- Dark Overlay element -->
     <div class="overlay"></div>
-
     <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
     <script>
-      //owl carousel script
-      $(".main-slide").owlCarousel({
-        loop: true,
-        animateOut: "fadeOut",
-        animateIn: "fadeIn",
-        margin: 0,
-        nav: true,
-        autoplay: true,
-        dots: false,
-        items: 1,
-      });
-      $(".products-carousel").owlCarousel({
-        rtl: true,
-        loop: false,
-        margin: 10,
-        nav: true,
-        dots: false,
-        responsive: {
-          0: {
-            items: 1,
-            loop: true,
-            stagePadding: 50,
-          },
-          480: {
-            items: 2,
-            stagePadding: 0,
-          },
-          768: {
-            items: 3,
-            stagePadding: 0,
-          },
-          992: {
-            items: 4,
-            stagePadding: 0,
-          },
-          1200: {
-            items: 5,
-            stagePadding: 0,
-          },
+    //owl carousel script
+    $(".main-slide").owlCarousel({
+      loop: true,
+      animateOut: "fadeOut",
+      animateIn: "fadeIn",
+      margin: 0,
+      nav: true,
+      autoplay: true,
+      dots: false,
+      items: 1,
+    });
+    $(".products-carousel").owlCarousel({
+      rtl: true,
+      loop: false,
+      margin: 10,
+      nav: true,
+      dots: false,
+      responsive: {
+        0: {
+          items: 1,
+          loop: true,
+          stagePadding: 50,
         },
-      });
-      $(".main-page-lists").owlCarousel({
-        rtl: true,
-        stagePadding: 50,
-        loop: false,
-        margin: 10,
-        nav: false,
-        responsive: {
-          0: {
-            items: 1,
-          },
-          600: {
-            items: 3,
-          },
-          1000: {
-            items: 5,
-          },
+        480: {
+          items: 2,
+          stagePadding: 0,
         },
-      });
+        768: {
+          items: 3,
+          stagePadding: 0,
+        },
+        992: {
+          items: 4,
+          stagePadding: 0,
+        },
+        1200: {
+          items: 5,
+          stagePadding: 0,
+        },
+      },
+    });
+    $(".main-page-lists").owlCarousel({
+      rtl: true,
+      stagePadding: 50,
+      loop: false,
+      margin: 10,
+      nav: false,
+      responsive: {
+        0: {
+          items: 1,
+        },
+        600: {
+          items: 3,
+        },
+        1000: {
+          items: 5,
+        },
+      },
+    });
     </script>
     <script>
-      //side menu script
-      $(document).ready(function () {
-        $(".sidebar").mCustomScrollbar({
-          theme: "minimal",
-        });
-
-        $(".dismiss, .overlay").on("click", function () {
-          // hide sidebar
-          $(".sidebar").removeClass("active");
-          // hide overlay
-          $(".overlay").removeClass("active");
-        });
-
-        $("#sidemenuCollapse").on("click", function () {
-          // open sidebar
-          $("#sidemenu").addClass("active");
-          // fade in the overlay
-          $(".overlay").addClass("active");
-          $(".collapse.in").toggleClass("in");
-          $(this).attr("aria-expanded", "false");
-        });
-        $("#minicartCollapse").on("click", function () {
-          $("#minicart").addClass("active");
-          $(".overlay").addClass("active");
-          $(".collapse.in").toggleClass("in");
-          $(this).attr("aria-expanded", "false");
-        });
+    //side menu script
+    $(document).ready(function () {
+      $(".sidebar").mCustomScrollbar({
+        theme: "minimal",
       });
 
-      //product quantity
-      $(document).ready(function () {
-        var quantitiy = 0;
-        $(".quantity-right-plus").click(function (e) {
-          e.preventDefault();
-          var quantityInput = $(this)
-            .closest(".input-group")
-            .children(".quantity");
-          var quantity = parseInt($(quantityInput).val());
-          $(quantityInput).val(quantity + 1);
+      $(".dismiss, .overlay").on("click", function () {
+        // hide sidebar
+        $(".sidebar").removeClass("active");
+        // hide overlay
+        $(".overlay").removeClass("active");
+      });
+
+      $("#sidemenuCollapse").on("click", function () {
+        // open sidebar
+        $("#sidemenu").addClass("active");
+        // fade in the overlay
+        $(".overlay").addClass("active");
+        $(".collapse.in").toggleClass("in");
+        $(this).attr("aria-expanded", "false");
+      });
+      $("#minicartCollapse").on("click", function () {
+        $("#minicart").addClass("active");
+        $(".overlay").addClass("active");
+        $(".collapse.in").toggleClass("in");
+        $(this).attr("aria-expanded", "false");
+      });
+    });
+
+    //product quantity
+    $(document).ready(function () {
+      var quantitiy = 0;
+      $(".quantity-right-plus").click(function (e) {
+        e.preventDefault();
+        var quantityInput = $(this)
+          .closest(".input-group")
+          .children(".quantity");
+        var quantity = parseInt($(quantityInput).val());
+        $(quantityInput).val(quantity + 1);
+      });
+
+      $(".quantity-left-minus").click(function (e) {
+        e.preventDefault();
+        var quantityInput = $(this)
+          .closest(".input-group")
+          .children(".quantity");
+        var quantity = parseInt($(quantityInput).val());
+        $(quantityInput).val(quantity - 1);
+      });
+      $(".product-quantity input").change(function () {
+        updateQuantity(this);
+      });
+
+      $(".product-removal button").click(function () {
+        removeItem(this);
+      });
+
+      /* Recalculate cart */
+      function recalculateCart() {
+        var subtotal = 0;
+
+        /* Sum up row totals */
+        $(".product").each(function () {
+          subtotal += parseFloat(
+            $(this).children(".product-line-price").text()
+          );
         });
 
-        $(".quantity-left-minus").click(function (e) {
-          e.preventDefault();
-          var quantityInput = $(this)
-            .closest(".input-group")
-            .children(".quantity");
-          var quantity = parseInt($(quantityInput).val());
-          $(quantityInput).val(quantity - 1);
+        /* Calculate totals */
+        var tax = subtotal * taxRate;
+        var shipping = subtotal > 0 ? shippingRate : 0;
+        var total = subtotal + tax + shipping;
+
+        /* Update totals display */
+        $(".totals-value").fadeOut(fadeTime, function () {
+          $("#cart-subtotal").html(subtotal.toFixed(2));
+          $("#cart-tax").html(tax.toFixed(2));
+          $("#cart-shipping").html(shipping.toFixed(2));
+          $("#cart-total").html(total.toFixed(2));
+          if (total == 0) {
+            $(".checkout").fadeOut(fadeTime);
+          } else {
+            $(".checkout").fadeIn(fadeTime);
+          }
+          $(".totals-value").fadeIn(fadeTime);
         });
-        $(".product-quantity input").change(function () {
-          updateQuantity(this);
-        });
+      }
 
-        $(".product-removal button").click(function () {
-          removeItem(this);
-        });
+      /* Update quantity */
+      function updateQuantity(quantityInput) {
+        /* Calculate line price */
+        var productRow = $(quantityInput).parent().parent();
+        var price = parseFloat(productRow.children(".product-price").text());
+        var quantity = $(quantityInput).val();
+        var linePrice = price * quantity;
 
-        /* Recalculate cart */
-        function recalculateCart() {
-          var subtotal = 0;
-
-          /* Sum up row totals */
-          $(".product").each(function () {
-            subtotal += parseFloat(
-              $(this).children(".product-line-price").text()
-            );
-          });
-
-          /* Calculate totals */
-          var tax = subtotal * taxRate;
-          var shipping = subtotal > 0 ? shippingRate : 0;
-          var total = subtotal + tax + shipping;
-
-          /* Update totals display */
-          $(".totals-value").fadeOut(fadeTime, function () {
-            $("#cart-subtotal").html(subtotal.toFixed(2));
-            $("#cart-tax").html(tax.toFixed(2));
-            $("#cart-shipping").html(shipping.toFixed(2));
-            $("#cart-total").html(total.toFixed(2));
-            if (total == 0) {
-              $(".checkout").fadeOut(fadeTime);
-            } else {
-              $(".checkout").fadeIn(fadeTime);
-            }
-            $(".totals-value").fadeIn(fadeTime);
-          });
-        }
-
-        /* Update quantity */
-        function updateQuantity(quantityInput) {
-          /* Calculate line price */
-          var productRow = $(quantityInput).parent().parent();
-          var price = parseFloat(productRow.children(".product-price").text());
-          var quantity = $(quantityInput).val();
-          var linePrice = price * quantity;
-
-          /* Update line price display and recalc cart totals */
-          productRow.children(".product-line-price").each(function () {
-            $(this).fadeOut(function () {
-              $(this).text(linePrice.toFixed(2));
-              recalculateCart();
-              $(this).fadeIn(fadeTime);
-            });
-          });
-        }
-
-        /* Remove item from cart */
-        function removeItem(removeButton) {
-          /* Remove row from DOM and recalc cart total */
-          var productRow = $(removeButton).closest("li");
-          productRow.slideUp(function () {
-            productRow.remove();
+        /* Update line price display and recalc cart totals */
+        productRow.children(".product-line-price").each(function () {
+          $(this).fadeOut(function () {
+            $(this).text(linePrice.toFixed(2));
             recalculateCart();
+            $(this).fadeIn(fadeTime);
           });
-        }
-      });
+        });
+      }
+
+      /* Remove item from cart */
+      function removeItem(removeButton) {
+        /* Remove row from DOM and recalc cart total */
+        var productRow = $(removeButton).closest("li");
+        productRow.slideUp(function () {
+          productRow.remove();
+          recalculateCart();
+        });
+      }
+    });
     </script>
-    {% block jsscript %}{% endblock jsscript %}
+    {% block jsscript %}
+    {% endblock jsscript %}
   </body>
 </html>
