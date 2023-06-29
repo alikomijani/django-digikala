@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from products.forms import ProductCommentForm
+from products.forms import ProductCommentModelForm
 from products.utils import get_product_last_price_list
 from .models import Product, Comment
 
@@ -26,21 +26,22 @@ def product_list_view(request):
 def product_detail_view(request, pk):
     p = get_object_or_404(Product.objects.select_related(
         'category').prefetch_related("comment_set"), pk=pk)
-    seller_prices = get_product_last_price_list(p.id)
-    if request.method == "GET":
-        form = ProductCommentForm()
-    elif request.method == 'POST':
-        form = ProductCommentForm(request.POST)
-        if form.is_valid():
-            print(form.cleaned_data)
-            return redirect('products:product_detail', pk=pk)
 
+    if request.method == "GET":
+        form = ProductCommentModelForm(initial={'product': p})
+    elif request.method == 'POST':
+        form = ProductCommentModelForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return redirect('products:product_detail', pk=pk)
+        else:
+            print(form.errors)
     context = {
         "product": p,
-        "seller_prices": seller_prices,
+        "seller_prices": p.sellers_last_price,
         "comments": p.comment_set.all(),
         "comment_counts": p.comment_set.all().count(),
-        'form': form
+        'comment_form': form
     }
     return render(
         template_name='products/product_detail.html',

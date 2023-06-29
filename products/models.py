@@ -43,6 +43,14 @@ class Product(models.Model):
         category_list.append(current_category)
         return category_list
 
+    @property
+    def sellers_last_price(self):
+        return SellerProductPrice.objects.raw(
+            """select * from products_sellerproductprice 
+            where product_id = %(id)s
+            group by seller_id
+            having Max(update_at)""", {"id": self.id})
+
     def __str__(self):
         return f"{self.id} {self.name}"
 

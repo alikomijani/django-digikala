@@ -83,9 +83,8 @@
         <div class="row">
           <div class="col-12">
             <form method="post">
-              {% csrf_token %}
-              {{ form.as_div }}
-              <input type="submit" value="submit">
+              {% include "components/forms.html" with form=comment_form %}
+              <input type="submit" value="submit" class="btn btn-primary">
             </form>
           </div>
           {% for comment in comments %}
