@@ -21,6 +21,7 @@ def login_view(request):
 
 
 def user_register_view(request):
+    status = 200
     if request.method == 'GET':
         form = UserRegisterFrom()
     else:
@@ -29,10 +30,12 @@ def user_register_view(request):
             user = form.save(commit=True)
             login(request=request, user=user)
             return redirect('accounts:user_info_view')
+        else:
+            status = 400
     context = {
         "form": form
     }
-    return render(request, 'accounts/login_view.html', context)
+    return render(request, 'accounts/register_view.html', context, status=status)
 
 
 def user_info_view(request):

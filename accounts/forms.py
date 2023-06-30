@@ -44,7 +44,8 @@ class UserRegisterFrom(forms.ModelForm):
             'last_name',
             'email',
             'mobile',
-            'password',
+            'password1',
+            'password2'
         )
 
     def clean(self) -> Dict[str, Any]:
@@ -54,12 +55,16 @@ class UserRegisterFrom(forms.ModelForm):
         if password1 != password2:
             self.add_error('password2', forms.ValidationError(
                 'در وارد کردن کلمه عبور دقت کنید', code='invalid'))
+            # raise forms.ValidationError(
+            #     'در وارد کردن کلمه عبور دقت کنید', code='invalid')
+
         cleaned_data.setdefault('password', password1)
         return cleaned_data
 
     def save(self, commit: bool = ...) -> Any:
         user = super().save(commit)
-        user.setPassword(self.cleaned_data['password'])
+        print(self.cleaned_data)
+        user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()
         return user
