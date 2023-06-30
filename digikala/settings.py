@@ -30,17 +30,23 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+SYSTEM_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'products',
-    'sellers',
-    'accounts.apps.AccountsConfig',
+
 ]
+DEVELOPED_APPS = [
+    'accounts.apps.AccountsConfig',
+    'products.apps.ProductsConfig',
+    'sellers.apps.SellersConfig',
+]
+THIRD_PARTY_APPS = []
+INSTALLED_APPS = SYSTEM_APPS + DEVELOPED_APPS + THIRD_PARTY_APPS
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,7 +59,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'digikala.urls'
-AUTH_USER_MODEL = "accounts.User"
 
 TEMPLATES = [
     {

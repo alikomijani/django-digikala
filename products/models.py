@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
-from django.conf import settings
+# from django.conf import settings
 
 
 class Brand(models.Model):
@@ -90,10 +90,10 @@ class Comment(models.Model):
                                 )
     rate = models.PositiveSmallIntegerField(_("Rate"))
     user_email = models.EmailField(_("Email"), max_length=254)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("user"),
-        on_delete=models.CASCADE)
+    # user = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     verbose_name=_("user"),
+    #     on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _("Comment")
