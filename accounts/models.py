@@ -38,11 +38,6 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class ActiveUserManager(UserManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
-
-
 class User(AbstractBaseUser, PermissionsMixin,):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
@@ -94,13 +89,3 @@ class User(AbstractBaseUser, PermissionsMixin,):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
-
-
-class ActiveUser(User):
-    objects = ActiveUserManager()
-
-    class Meta:
-        proxy = True
-
-
-user = ActiveUser.objects.all()

@@ -1,0 +1,16 @@
+{% extends "base/base.html" %}
+{% block title %}
+    {{ product.name }}
+{% endblock title %}
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div id="page-content" class="col-12">
+                <form action={% url 'accounts:login_view' %} method="post">
+                    {% include "components/forms.html" %}
+                    <input type="submit" value="login" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock main %}
