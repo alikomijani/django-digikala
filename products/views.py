@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
-from products.utils import get_product_last_price_list
-from .models import Product, Comment
+from .models import Product
 
 # Create your views here.
 
@@ -32,10 +31,8 @@ def product_detail_view(request, pk):
     elif request.method == 'POST':
         form = ProductCommentModelForm(request.POST)
         if form.is_valid():
-            form.save(commit=True)
+            form.save()
             return redirect('products:product_detail', pk=pk)
-        else:
-            print(form.errors)
     context = {
         "product": p,
         "seller_prices": p.sellers_last_price,
@@ -48,25 +45,3 @@ def product_detail_view(request, pk):
         request=request,
         context=context
     )
-
-
-def create_comment(request, product_id):
-    pass
-    # if request.method == "POST":
-    #     Comment.objects.create(
-    #         user_email=request.POST.get("user_email", ''),
-    #         title=request.POST.get("title", ''),
-    #         text=request.POST.get("text", ''),
-    #         rate=int(request.POST.get("rate", 0)),
-    #         product_id=request.POST.get("product_id", '')
-    #     )
-    # return redirect('products:product_detail', pk=product_id)
-
-
-# def delete_comment(request, pk):
-#     if request.method == 'POST':
-#         c = Comment.objects.get(pk=pk)
-#         c.delete()
-#         return HttpResponse('comment delete successfully')
-#     else:
-#         return HttpResponseNotAllowed('method not allowed')
