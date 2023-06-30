@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+{% block title %}
+    user profile
+{% endblock title %}
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div id="page-content" class="col-12">
+                {% if request.user.is_authenticated %}
+                    <h1>{{ request.user.get_full_name }}</h1>
+                {% else %}
+                    <a href={% url 'accounts:login_view' %}>click here to redirect to login page</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock main %}

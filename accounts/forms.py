@@ -1,6 +1,7 @@
 from typing import Any, Dict
 from django import forms
 from django.contrib.auth import authenticate
+from .models import User
 
 
 class UserLoginForm(forms.Form):
@@ -26,3 +27,39 @@ class UserLoginForm(forms.Form):
             return clean_data
         else:
             raise forms.ValidationError('credential is invalid')
+
+
+class UserRegisterFrom(forms.ModelForm):
+    password1 = forms.CharField(
+        widget=forms.PasswordInput({"class": "from-control"}),
+        label='کلمه عبور')
+    password2 = forms.CharField(
+        widget=forms.PasswordInput({"class": "from-control"}),
+        label='تکرار کلمه عبور')
+
+    class Meta:
+        model = User
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'mobile',
+            'password',
+        )
+
+    def clean(self) -> Dict[str, Any]:
+        cleaned_data = super().clean()
+        password1 = cleaned_data.pop('password1', None)
+        password2 = cleaned_data.pop('password2', None)
+        if password1 != password2:
+            self.add_error('password2', forms.ValidationError(
+                'در وارد کردن کلمه عبور دقت کنید', code='invalid'))
+        cleaned_data.setdefault('password', password1)
+        return cleaned_data
+
+    def save(self, commit: bool = ...) -> Any:
+        user = super().save(commit)
+        user.setPassword(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
