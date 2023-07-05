@@ -1,7 +1,7 @@
 
 from django import forms
-from django.core.exceptions import ValidationError
-from products.models import Product, Comment
+
+from products.models import Comment
 
 
 # class ProductCommentForm(forms.Form):
@@ -25,13 +25,17 @@ from products.models import Product, Comment
 class ProductCommentModelForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = "__all__"
+        exclude = ('user',)
         widgets = {
-            "user_email": forms.EmailInput(attrs={'class': 'form-control'}),
             "title": forms.TextInput(attrs={'class': 'form-control'}),
-            "text": forms.Textarea(attrs={'class': 'form-control', 'cols': 20}),
+            "text": forms.Textarea(attrs={'class': 'form-control', }),
             "rate": forms.NumberInput(attrs={'class': 'form-control'}),
             "product": forms.HiddenInput(),
+        }
+        labels = {
+            "title": "عنوان",
+            "text": "متن",
+            "rate":  "امتیاز",
         }
 
     def save(self, commit: bool = ...):

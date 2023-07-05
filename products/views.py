@@ -31,11 +31,14 @@ def product_detail_view(request, pk):
     elif request.method == 'POST':
         form = ProductCommentModelForm(request.POST)
         if form.is_valid():
-            form.save()
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.save()
             return redirect('products:product_detail', pk=pk)
     context = {
+        "default_product_seller": p.sellers_last_price[0],
         "product": p,
-        "seller_prices": p.sellers_last_price,
+        "product_sellers": p.sellers_last_price,
         "comments": p.comment_set.all(),
         "comment_counts": p.comment_set.all().count(),
         'comment_form': form
@@ -45,3 +48,30 @@ def product_detail_view(request, pk):
         request=request,
         context=context
     )
+
+
+def home(request):
+    query = Product.objects.all()
+    most_off_products = query
+    most_sell = query
+    most_recent = query
+    context = {
+        "most_off_products": most_off_products,
+        "most_sell": most_sell,
+        "most_recent": most_recent,
+        "banners": [],
+    }
+
+    return render(
+        template_name='products/index.html',
+        request=request,
+        context=context
+    )
+
+
+def category_view(request, category_slug):
+    pass
+
+
+def brand_view(request, brand_slug):
+    pass

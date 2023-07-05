@@ -1,6 +1,6 @@
-{% extends 'base/base.html' %}
+{% extends "base/base.html" %}
 {% block title %}
-  {{ product.name }}
+  دی‌جی کالا | {{ product.name }}
 {% endblock title %}
 {% block main %}
   <div class="container">
@@ -9,7 +9,7 @@
         <div id="breadcrump" class="row px-3">
           <ul>
             <li>
-              <a href="/">فوکالا</a>
+              <a href={% url "home_view" %}>فوکالا</a>
             </li>
             {% for category in product.categories_list %}
               <li>
@@ -40,13 +40,17 @@
           <div class="product-add-cart col-12 col-lg-4">
             <div class="box-wrap">
               <div class="product-seller">
-                فروشنده محصول: فوکالا
+                فروشنده محصول: {{ default_product_seller.seller.name }}
                 <br />
                 <span>رضایت خرید: 98 درصد</span>
               </div>
               <div class="product-guarantee">گارانتی اصالت و سلامت فیزیکی کالا</div>
               <div class="product-price">
-                قیمت: <del>7,000</del> <span>7,000 تومان</span>
+                {% if default_product_seller.discount %}
+                  قیمت: <del>{{ default_product_seller.price }}</del> <span>{{ default_product_seller.discounted_price }} تومان</span>
+                {% else %}
+                  <span>{{ default_product_seller.discounted_price }} تومان</span>
+                {% endif %}
               </div>
               <button href="#" class="btn btn-cart">
                 <i class="fas fa-plus"></i> افزودن به سبد
@@ -56,7 +60,7 @@
         </div>
       </div>
       <div id="product-sellers" class="col-12">
-        {% for s in seller_prices %}
+        {% for s in product_sellers %}
           <div class="row">
             <div class="col-4">
               <div class="product-seller">
@@ -67,7 +71,11 @@
             <div class="col-4">
               <div class="product-price">
                 <div class="product-price">
-                  <span>{{ s.price }} تومان</span>
+                  {% if s.discount %}
+                    قیمت: <del>{{ s.price }}</del> <span>{{ s.discounted_price }} تومان</span>
+                  {% else %}
+                    <span>{{ s.discounted_price }} تومان</span>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -80,13 +88,15 @@
         {% endfor %}
       </div>
       <div id="product-comments" class="col-12">
-        <div class="row">
-          <div class="col-12">
-            <form method="post">
-              {% include "components/forms.html" with form=comment_form %}
-              <input type="submit" value="submit" class="btn btn-primary">
-            </form>
-          </div>
+        <div class="row card">
+          {% if request.user.is_authenticated %}
+            <div class="col-12 card-body">
+              <form method="post">
+                {% include "components/forms.html" with form=comment_form %}
+                <input type="submit" value="ثبت نظر" class="btn btn-primary">
+              </form>
+            </div>
+          {% endif %}
           {% for comment in comments %}
             <div class="col-12">
               <h5>{{ comment.title }}</h5>

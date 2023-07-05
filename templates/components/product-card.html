@@ -1,0 +1,23 @@
+<a href="{% url 'products:product_detail' pk=product.id %}">
+    <div class="card">
+        <img class="slide-item"
+             src="{{ product.default_image.image.url }}"
+             alt="{{ product.name }}" />
+        <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <div class="product-price">
+                {% if product.default_product_seller.discount %}
+                    قیمت: <del>{{ product.default_product_seller.price }}</del>
+                    <span>{{ product.default_product_seller.discounted_price }}
+                    تومان</span>
+                {% else %}
+                    <span>{{ product.default_product_seller.discounted_price }} تومان</span>
+                {% endif %}
+            </div>
+            <button href="#" class="btn btn-cart">
+                <i class="fas fa-plus"></i> افزودن به
+                سبد
+            </button>
+        </div>
+    </div>
+</a>

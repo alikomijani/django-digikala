@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
-# from django.conf import settings
+from django.conf import settings
 
 
 class Brand(models.Model):
@@ -51,6 +51,12 @@ class Product(models.Model):
             group by seller_id
             having Max(update_at)""", {"id": self.id})
 
+    @property
+    def default_product_seller(self):
+        if (self.sellers_last_price):
+            return self.sellers_last_price[0]
+        return None
+
     def __str__(self):
         return f"{self.id} {self.name}"
 
@@ -89,11 +95,11 @@ class Comment(models.Model):
                                 on_delete=models.CASCADE,
                                 )
     rate = models.PositiveSmallIntegerField(_("Rate"))
-    user_email = models.EmailField(_("Email"), max_length=254)
-    # user = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL,
-    #     verbose_name=_("user"),
-    #     on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("user"),
+        null=True,
+        on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _("Comment")
@@ -176,10 +182,17 @@ class SellerProductPrice(models.Model):
     seller = models.ForeignKey(
         "sellers.Seller", verbose_name=_("Seller"), on_delete=models.CASCADE)
     price = models.PositiveIntegerField(_("Price"))
+    discount = models.PositiveSmallIntegerField(_("Discount"), default=0)
     create_at = models.DateTimeField(
         _("create at"), auto_now=False, auto_now_add=True)
     update_at = models.DateTimeField(
         _("create at"), auto_now=True,)
+
+    @property
+    def discounted_price(self):
+        if self.discount > 0:
+            return int(self.price - (self.discount * self.price / 100))
+        return self.price
 
     class Meta:
         verbose_name = _("Seller Product Price")

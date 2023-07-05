@@ -14,7 +14,7 @@
         <ul class="p-0 components">
             <p>سوپر مارکت سریع</p>
             <li class="active">
-                <a href="#home">صفحه اصلی</a>
+                <a href={% url 'home_view' %}>صفحه اصلی</a>
             </li>
             <li>
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">انواع آشامیدنی</a>
@@ -43,8 +43,11 @@
                     title="مشاهده منو">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand p-0 m-0" href="#">
-                <img src="{% static 'images/fookala-farsi.svg' %}" width="115" height="36">
+            <a class="navbar-brand p-0 m-0" href={% url 'home_view' %}>
+                <img src="{% static 'images/fookala-farsi.svg' %}"
+                     alt='logo'
+                     width="115"
+                     height="36">
             </a>
             <div class="searchform mx-auto w-50 w-60-lg px-0 px-lg-1">
                 <form action="/search"
