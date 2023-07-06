@@ -2,6 +2,18 @@ from typing import Any, Dict
 from django import forms
 from django.contrib.auth import authenticate
 from .models import User
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+
+
+class MyAuthenticationForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(
+        attrs={"autofocus": True, 'class': "form-control"}), label="نام کاربری")
+    password = forms.CharField(
+        label="کلمه عبور",
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={"autocomplete": "current-password", 'class': "form-control"}),
+    )
 
 
 class UserLoginForm(forms.Form):

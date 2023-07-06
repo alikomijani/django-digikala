@@ -1,17 +1,10 @@
-{% extends "base/base.html" %}
-{% block title %}
-    user profile
-{% endblock title %}
-{% block main %}
-    <div class="container">
-        <div class="row">
-            <div id="page-content" class="col-12">
-                {% if request.user.is_authenticated %}
-                    <h1>{{ request.user.get_full_name }}</h1>
-                {% else %}
-                    <a href={% url 'accounts:login_view' %}>click here to redirect to login page</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-{% endblock main %}
+{% extends "accounts/user_admin_template.html" %}
+{% block page_title %}
+    User Info
+{% endblock page_title %}
+{% block content %}
+    <div>first name: {{ user.first_name }}</div>
+    <div>last name: {{ user.last_name }}</div>
+    <div>Email: {{ user.email }}</div>
+    <div>Mobile: {{ user.mobile }}</div>
+{% endblock content %}
