@@ -1,47 +1,47 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#ef5661" />
-    <title>
-      {% block title %}
-        سوپر مارکت آنلاین فوکالا
-      {% endblock title %}
-    </title>
-    {% block meta %}
-      <meta name="description"
-            content="تجربه خرید آنلاین از سوپرمارکت در سریعترین زمان" />
-      <meta name="author" content="Ali komijani" />
-    {% endblock meta %}
-    <link href="{% static 'images/webramz.svg' %}" rel="shortcut icon" />
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/owl.carousel.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/jquery.mCustomScrollbar.min.css' %}"
-          rel="stylesheet" />
-    <link href="{% static 'css/animate.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
-    <!-- Font Awesome JS -->
-    <script defer src="{% static 'js/solid.js' %}"></script>
-    <script defer src="{% static 'js/fontawesome.js' %}"></script>
-  </head>
-  <body>
-    {% include "components/header.html" %}
-    <!-- Page Content -->
-    <div id="content">
-      {% block main %}
-      {% endblock main %}
-      {% include "components/footer.html" %}
-    </div>
-    <!-- Dark Overlay element -->
-    <div class="overlay"></div>
-    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-    <script>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="theme-color" content="#ef5661" />
+  <title>
+    {% block title %}
+    سوپر مارکت آنلاین فوکالا
+    {% endblock title %}
+  </title>
+  {% block meta %}
+  <meta name="description" content="تجربه خرید آنلاین از سوپرمارکت در سریعترین زمان" />
+  <meta name="author" content="Ali komijani" />
+  {% endblock meta %}
+  <link href="{% static 'images/webramz.svg' %}" rel="shortcut icon" />
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/owl.carousel.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/jquery.mCustomScrollbar.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/animate.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  <!-- Font Awesome JS -->
+  <script defer src="{% static 'js/solid.js' %}"></script>
+  <script defer src="{% static 'js/fontawesome.js' %}"></script>
+</head>
+
+<body>
+  {% include "components/header.html" %}
+  <!-- Page Content -->
+  <div id="content">
+    {% block main %}
+    {% endblock main %}
+    {% include "components/footer.html" %}
+  </div>
+  <!-- Dark Overlay element -->
+  <div class="overlay"></div>
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'js/storage.js' %}"></script>
+  <script>
     //owl carousel script
     $(".main-slide").owlCarousel({
       loop: true,
@@ -101,8 +101,8 @@
         },
       },
     });
-    </script>
-    <script>
+  </script>
+  <script>
     //side menu script
     $(document).ready(function () {
       $(".sidebar").mCustomScrollbar({
@@ -219,8 +219,9 @@
         });
       }
     });
-    </script>
-    {% block jsscript %}
-    {% endblock jsscript %}
-  </body>
+  </script>
+  {% block jsscript %}
+  {% endblock jsscript %}
+</body>
+
 </html>
