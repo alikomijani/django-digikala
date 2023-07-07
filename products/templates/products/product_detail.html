@@ -9,11 +9,11 @@
         <div id="breadcrump" class="row px-3">
           <ul>
             <li>
-              <a href={% url "home_view" %}>فوکالا</a>
+              <a href='{% url "home_view" %}'>فوکالا</a>
             </li>
             {% for category in product.categories_list %}
               <li>
-                <a href="/">{{ category.name }}</a>
+                <a href="{% url 'products:product_list' slug=category.slug %}">{{ category.name }}</a>
               </li>
             {% endfor %}
           </ul>

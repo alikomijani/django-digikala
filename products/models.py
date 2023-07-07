@@ -41,6 +41,7 @@ class Product(models.Model):
             category_list.append(current_category)
             current_category = current_category.parent
         category_list.append(current_category)
+        category_list.reverse()
         return category_list
 
     @property
@@ -78,6 +79,10 @@ class Category(models.Model):
                                null=True,
                                blank=True
                                )
+
+    @property
+    def children(self):
+        return self.category_set.all()
 
     class Meta:
         verbose_name = _("Category")

@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
 from .models import Product, Comment, Category
@@ -101,6 +103,23 @@ def home(request):
 
 class ProductListView(ListView):
     model = Product
+    context_object_name = "product_list"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        category = Category.objects.get(slug=self.kwargs['slug'])
+        self.category = category
+        print(self.request.GET)
+        query = Product.objects.filter(
+            category__slug__in=[self.kwargs['slug'], *category.children],
+            name__contains=self.request.GET.get('search', ''))
+        return query
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context["category"] = self.category
+        return context
 
 
 def brand_view(request, brand_slug):

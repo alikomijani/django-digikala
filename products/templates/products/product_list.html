@@ -60,14 +60,14 @@
                 <div id="search-widget" class="sidebar-widget">
                     <h4 class="widget-title">جستجوی محصول</h4>
                     <div class="widget-content">
-                        <form action="/search"
+                        <form action="{% url 'products:product_list' slug=category.slug %}"
                               data-action=""
                               id="frmSearch-side"
                               autocomplete="off"
                               class="search-box">
                             <div class="input-group">
                                 <input autocomplete="off"
-                                       name="keyword"
+                                       name="search"
                                        type="text"
                                        id="search-field-side"
                                        class="search-field form-control"
@@ -120,8 +120,8 @@
                     <span>ارزان‌ترین</span> <span>گران‌ترین</span> <span>سریع‌ترین ارسال</span>
                 </div>
                 <div id="products-grid" class="row">
-                    {% for prorduct in object_list %}
-                        {% include "components/product-card.html" %}
+                    {% for product in product_list %}
+                        <div class='col-6 col-lg-4 col-xl-3'>{% include "components/product-card.html" %}</div>
                     {% endfor %}
                 </div>
             </div>
