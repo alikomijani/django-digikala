@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
-from .models import Product, Comment
-from django.http import HttpResponse, HttpResponseNotAllowed
+from .models import Product, Comment, Category
+
 from django.views import View
+from django.views.generic import ListView
 
 # Create your views here.
 
@@ -98,8 +99,8 @@ def home(request):
     )
 
 
-def category_view(request, category_slug):
-    pass
+class ProductListView(ListView):
+    model = Product
 
 
 def brand_view(request, brand_slug):

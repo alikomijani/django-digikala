@@ -1,0 +1,130 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    {{ category.name }}
+{% endblock title %}
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <aside id="widget-sidebar" class="col-12 col-md-5 col-lg-3 p-0 pl-md-3">
+                <div id="category-widget" class="sidebar-widget">
+                    <h4 class="widget-title">دسته بندی محصولات</h4>
+                    <div class="widget-content">
+                        <ul>
+                            <li>
+                                <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false"><i class="fas fa-angle-left"></i> کالاهای اساسی و
+                                خوار و بار</a>
+                                <ul class="collapse p-0" id="pageSubmenu1">
+                                    <li>
+                                        <a href="#">نان</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">برنج</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">روغن</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">قند و شکر</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">حبوبات و سویا</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="active">
+                                <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="true"><i class="fas fa-angle-left"></i> لبنیات</a>
+                                <ul class="collapse show p-0" id="pageSubmenu2">
+                                    <li>
+                                        <a href="#">شیر</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">کره حیوانی و گیاهی</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">دوغ</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">ماست</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">پنیر</a>
+                                    </li>
+                                    <li class="active">
+                                        <a href="#">خامه</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="search-widget" class="sidebar-widget">
+                    <h4 class="widget-title">جستجوی محصول</h4>
+                    <div class="widget-content">
+                        <form action="/search"
+                              data-action=""
+                              id="frmSearch-side"
+                              autocomplete="off"
+                              class="search-box">
+                            <div class="input-group">
+                                <input autocomplete="off"
+                                       name="keyword"
+                                       type="text"
+                                       id="search-field-side"
+                                       class="search-field form-control"
+                                       placeholder="جستجو در این دسته بندی">
+                                <div class="input-group-append">
+                                    <button class="btn btn-gradient-primary" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="search-result search-box-dropdown mt-8"></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="filter-widget" class="sidebar-widget">
+                    <h4 class="widget-title">برند محصول</h4>
+                    <div class="widget-content">
+                        <form action=""
+                              data-action=""
+                              id="filter-side"
+                              autocomplete="off"
+                              class="filter-box">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kalleh">
+                                <label class="custom-control-label" for="kalleh">کاله</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="mihan">
+                                <label class="custom-control-label" for="mihan">میهن</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="choopan">
+                                <label class="custom-control-label" for="choopan">چوپان</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="damdaran">
+                                <label class="custom-control-label" for="damdaran">دامداران</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+            <div id="page-content" class="col-12 col-md-7 col-lg-9">
+                <div id="breadcrump" class="row px-3">فوکالا / لبنیات / خامه</div>
+                <div id="product-sort" class="row px-3">
+                    <div class="sort-title">
+                        <i class="fas fa-bars"></i> مرتب سازی بر اساس:
+                    </div>
+                    <span>پرفروش‌ترین‌</span> <span>محبوب‌ترین</span> <span class="active">جدیدترین</span>
+                    <span>ارزان‌ترین</span> <span>گران‌ترین</span> <span>سریع‌ترین ارسال</span>
+                </div>
+                <div id="products-grid" class="row">
+                    {% for prorduct in object_list %}
+                        {% include "components/product-card.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
