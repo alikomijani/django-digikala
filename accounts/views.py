@@ -3,9 +3,10 @@ from django.urls import reverse
 from accounts.forms import UserLoginForm, UserRegisterFrom, MyAuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
 from products.models import Comment
+from .models import User
 # Create your views here.
 
 
@@ -66,4 +67,18 @@ def user_comments_view(request):
     query = Comment.objects.filter(user=request.user)
     return render(request, 'accounts/user_comments.html', {
         'comments': query
+    })
+
+
+def is_staff_user(user):
+    return user.is_staff and user.is_active
+
+
+@user_passes_test(is_staff_user)
+@permission_required('accounts.view_user', raise_exception=True)
+@login_required()
+def get_users_list(request):
+    users = User.objects.all()
+    return render(request, 'accounts/view_all_users.html', {
+        'users_list': users
     })

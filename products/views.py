@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
-from .models import Product
+from .models import Product, Comment
+from django.http import HttpResponse, HttpResponseNotAllowed
+from django.views import View
 
 # Create your views here.
 
@@ -20,6 +22,33 @@ def product_list_view(request):
         request=request,
         context=context,
     )
+
+
+class ProductClassBaseView(View):
+    form_class = ProductCommentModelForm
+    template_name = "products/product_detail.html"
+
+    def get(self, request, pk, *args, **kwargs):
+        p = get_object_or_404(Product.objects.select_related(
+            'category').prefetch_related("comment_set"), pk=pk)
+        form = self.form_class(initial={'product': p})
+        context = {
+            "default_product_seller": p.sellers_last_price[0],
+            "product": p,
+            "product_sellers": p.sellers_last_price,
+            "comments": p.comment_set.all(),
+            "comment_counts": p.comment_set.all().count(),
+            'comment_form': form
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.save()
+        return redirect('products:product_detail', pk=pk)
 
 
 def product_detail_view(request, pk):
