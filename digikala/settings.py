@@ -43,6 +43,7 @@ DEVELOPED_APPS = [
     'accounts.apps.AccountsConfig',
     'products.apps.ProductsConfig',
     'sellers.apps.SellersConfig',
+    'dashboard.apps.DashboardConfig'
 ]
 THIRD_PARTY_APPS = []
 INSTALLED_APPS = SYSTEM_APPS + DEVELOPED_APPS + THIRD_PARTY_APPS

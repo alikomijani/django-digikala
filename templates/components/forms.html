@@ -1,13 +1,22 @@
 {% csrf_token %}
 {{ form.non_field_errors }}
-{% for hidden in form.hidden_fields %}
-{{ hidden }}
-{% endfor %}
+{% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
 {# Include the visible fields #}
 {% for field in form.visible_fields %}
-<div class="form-group">
-    {{ field.label_tag }} {{ field }}
-    {{ field.errors }}
-
-</div>
+    <div class="form-group">
+        {{ field.label_tag }} {{ field }}
+        {{ field.errors }}
+    </div>
+{% endfor %}
+{% for inline in form.inlines %}
+    <div class='card mt-2'>
+        <div class="card-body">
+            {% for field in inline %}
+                <div class="form-group">
+                    {{ field.label_tag }} {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endfor %}

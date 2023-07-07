@@ -1,6 +1,9 @@
+from typing import Any, Optional
+from django.db import models
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from accounts.forms import UserLoginForm, UserRegisterFrom, MyAuthenticationForm
+from accounts.forms import UserLoginForm, UserRegisterFrom,\
+    MyAuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
@@ -8,11 +11,23 @@ from django.contrib.auth.forms import AuthenticationForm
 from products.models import Comment
 from .models import User
 # Create your views here.
+from django.views.generic import ListView, DetailView, CreateView,\
+    DeleteView, UpdateView
 
 
 class MyLoginView(LoginView):
     template_name = 'accounts/login_view.html'
     authentication_form = MyAuthenticationForm
+
+
+class UserUpdateView(UpdateView):
+    model = User
+    fields = ['first_name', 'last_name', 'mobile']
+    queryset = User.objects.all()
+    template_name = 'accounts/user_info.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 def login_view(request):

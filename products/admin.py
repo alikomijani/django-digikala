@@ -23,7 +23,7 @@ class ProductPriceInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'en_name', 'name', 'category']
-    list_filter = ['category']
+    list_filter = ['category', 'is_active']
     search_fields = ['en_name', 'name']
     inlines = (ProductImageInline, ProductOptionInline, ProductPriceInline)
 

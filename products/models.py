@@ -1,3 +1,4 @@
+from typing import Dict, Tuple
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -11,6 +12,16 @@ class Brand(models.Model):
 
     def __str__(self) -> str:
         return self.slug
+
+
+class MyQuerySet(models.QuerySet):
+    def delete(self):
+        return self.update(is_active=False)
+
+
+class NoDeleteManager(models.Manager):
+    def get_queryset(self):
+        return MyQuerySet(self.model, using=self._db)
 
 
 class Product(models.Model):
@@ -28,10 +39,17 @@ class Product(models.Model):
     sellers = models.ManyToManyField("sellers.Seller",
                                      verbose_name=_("Sellers"),
                                      through='SellerProductPrice')
+    is_active = models.BooleanField(_("is active"), default=True)
+    objects = NoDeleteManager()
 
     @property
     def default_image(self):
         return self.image_set.filter(is_default=True).first()
+
+    def delete(self, using=None, keep_parents=None):
+        self.is_active = False
+        self.save()
+        return
 
     @property
     def categories_list(self):

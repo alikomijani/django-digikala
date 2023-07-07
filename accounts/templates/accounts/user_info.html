@@ -1,10 +1,12 @@
 {% extends "accounts/user_admin_template.html" %}
 {% block page_title %}
-    User Info
+User Info
 {% endblock page_title %}
 {% block content %}
-    <div>first name: {{ user.first_name }}</div>
-    <div>last name: {{ user.last_name }}</div>
-    <div>Email: {{ user.email }}</div>
-    <div>Mobile: {{ user.mobile }}</div>
+
+{{form.as_p}}
+<div>first name: {{ user.first_name }}</div>
+<div>last name: {{ user.last_name }}</div>
+<div>Email: {{ user.email }}</div>
+<div>Mobile: {{ user.mobile }}</div>
 {% endblock content %}

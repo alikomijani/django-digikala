@@ -5,8 +5,8 @@ from products.forms import ProductCommentModelForm
 from .models import Product, Comment, Category
 
 from django.views import View
-from django.views.generic import ListView
-
+from django.views.generic import ListView, DetailView, CreateView,\
+    DeleteView, UpdateView
 # Create your views here.
 
 
@@ -25,6 +25,11 @@ def product_list_view(request):
         request=request,
         context=context,
     )
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    queryset = Product.objects.exclude(is_active=False)
 
 
 class ProductClassBaseView(View):
@@ -104,12 +109,13 @@ def home(request):
 class ProductListView(ListView):
     model = Product
     context_object_name = "product_list"
+    queryset = Product.objects.exclude(is_active=False)
 
     def get_queryset(self) -> QuerySet[Any]:
+        query = super().get_queryset()
         category = Category.objects.get(slug=self.kwargs['slug'])
         self.category = category
-        print(self.request.GET)
-        query = Product.objects.filter(
+        query = query.filter(
             category__slug__in=[self.kwargs['slug'], *category.children],
             name__contains=self.request.GET.get('search', ''))
         return query
