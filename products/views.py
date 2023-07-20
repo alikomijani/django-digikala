@@ -2,11 +2,13 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
-from .models import Product, Comment, Category
-
+from .models import Product, Category, Comment
+import json
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView,\
-    DeleteView, UpdateView
+from django.views.generic import ListView, DetailView
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 
 
@@ -38,13 +40,12 @@ class ProductClassBaseView(View):
 
     def get(self, request, pk, *args, **kwargs):
         p = get_object_or_404(Product.objects.select_related(
-            'category').prefetch_related("comment_set"), pk=pk)
+            'category'), pk=pk)
         form = self.form_class(initial={'product': p})
         context = {
             "default_product_seller": p.sellers_last_price[0],
             "product": p,
             "product_sellers": p.sellers_last_price,
-            "comments": p.comment_set.all(),
             "comment_counts": p.comment_set.all().count(),
             'comment_form': form
         }
@@ -128,5 +129,40 @@ class ProductListView(ListView):
         return context
 
 
-def brand_view(request, brand_slug):
-    pass
+@csrf_exempt
+def comment_api_response(request, pk):
+    if request.method == 'GET':
+        comments = Comment.objects.filter(product_id=pk).select_related('user')
+        comment_list = []
+        for comment in comments:
+            comment_list.append({
+                "id": comment.id,
+                "user": {'id': comment.user.id,
+                         'first_name': comment.user.first_name
+                         }if comment.user is not None else None,
+                "title": comment.title,
+                "text": comment.text,
+                "rate": comment.rate
+            })
+        context = {
+            "result": comment_list,
+            "count": comments.count(),
+        }
+    else:
+        data = request.POST
+        c = Comment.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            title=data.get('title', ''),
+            text=data.get('text', ''),
+            rate=data.get('rate', 0), product_id=pk)
+        context = {
+            "id": c.id,
+            "user": {'id': c.user.id,
+                     'first_name': c.user.first_name
+                     } if c.user is not None else None,
+            "title": c.title,
+            "text": c.text,
+            "rate": c.rate
+
+        }
+    return HttpResponse(content=json.dumps(context), content_type='application/json')

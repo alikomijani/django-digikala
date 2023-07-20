@@ -95,19 +95,20 @@
       <div class="row card">
         {% if request.user.is_authenticated %}
           <div class="col-12 card-body">
-            <form method="post">
+            <form id="comment_form" method="post">
               {% include "components/forms.html" with form=comment_form %}
               <input type="submit" value="ثبت نظر" class="btn btn-primary">
             </form>
           </div>
         {% endif %}
-        {% for comment in comments %}
+        <div id='comment-list' class="row card"></div>
+        <!-- {% for comment in comments %}
           <div class="col-12">
             <h5>{{ comment.title }}</h5>
             <span>{{ comment.user.email }}</span>
             <p>{{ comment.text }}</p>
           </div>
-        {% endfor %}
+        {% endfor %} -->
       </div>
     </div>
   </div>
@@ -115,17 +116,48 @@
 {% endblock main %}
 {% block jsscript %}
   <script>
-    function addProductToCart(sellerId , price , discounted_price){
-      const product = {
-        id:{{product.id}},
-        image: "{{product.default_image.image.url}}",
-        price,
-        discounted_price,
-        name: '{{product.name}}',
-        sellerId
+  function addProductToCart(sellerId, price, discounted_price) {
+    const product = {
+      id: {{ product.id }},
+  image: "{{product.default_image.image.url}}",
+    price,
+    discounted_price,
+    name: '{{product.name}}',
+      sellerId
       }
-      cartStorageAddItem(product)
+  cartStorageAddItem(product)
     }
 
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", async function (event) {
+    //we ready baby
+    const response  = await fetch("{% url 'products:comment_api'  pk=product.id  %}")
+    const data = await response.json()
+    const root = document.getElementById('comment-list')
+      for(item of data.result){
+        root.innerHTML += (`<div class="col-12">
+          <div>${item.title}</div> 
+          <div>${item.text}<div> 
+          </div>`)
+      }
+    })
+  </script>
+  <script>
+    const form = document.getElementById('comment_form')
+    form.addEventListener('submit',async function(event){
+      event.preventDefault()
+      const form_data = new FormData(event.target)
+      const res = await fetch("{% url 'products:comment_api'  pk=product.id  %}" , {
+        method:"post",
+        body: form_data
+      })
+      const data = await res.json()
+      const root = document.getElementById('comment-list')
+      root.innerHTML += (`<div class="col-12">
+        <div>${data.title}</div> 
+        <div>${data.text}<div> 
+        </div>`)
+    })
   </script>
 {% endblock jsscript %}
