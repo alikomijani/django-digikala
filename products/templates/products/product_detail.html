@@ -97,6 +97,7 @@
           <div class="col-12 card-body">
             <form id="comment_form" method="post">
               {% include "components/forms.html" with form=comment_form %}
+              {% csrf_token %}
               <input type="submit" value="ثبت نظر" class="btn btn-primary">
             </form>
           </div>
@@ -148,9 +149,16 @@
     form.addEventListener('submit',async function(event){
       event.preventDefault()
       const form_data = new FormData(event.target)
+      const js_data= Object.fromEntries(form_data.entries())
+      console.log(js_data)
       const res = await fetch("{% url 'products:comment_api'  pk=product.id  %}" , {
-        method:"post",
-        body: form_data
+        headers: {
+          "X-CSRFToken": "{{csrf_token}}",
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8'
+        },
+        method:"POST",
+        body: JSON.stringify(js_data)
       })
       const data = await res.json()
       const root = document.getElementById('comment-list')
@@ -159,5 +167,6 @@
         <div>${data.text}<div> 
         </div>`)
     })
+      
   </script>
 {% endblock jsscript %}

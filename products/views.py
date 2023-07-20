@@ -8,7 +8,9 @@ from django.views import View
 from django.views.generic import ListView, DetailView
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializer import CommentModelSerializer
 # Create your views here.
 
 
@@ -135,34 +137,36 @@ def comment_api_response(request, pk):
         comments = Comment.objects.filter(product_id=pk).select_related('user')
         comment_list = []
         for comment in comments:
-            comment_list.append({
-                "id": comment.id,
-                "user": {'id': comment.user.id,
-                         'first_name': comment.user.first_name
-                         }if comment.user is not None else None,
-                "title": comment.title,
-                "text": comment.text,
-                "rate": comment.rate
-            })
+            comment_list.append(comment.to_dict())
         context = {
             "result": comment_list,
             "count": comments.count(),
         }
-    else:
-        data = request.POST
-        c = Comment.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            title=data.get('title', ''),
-            text=data.get('text', ''),
-            rate=data.get('rate', 0), product_id=pk)
-        context = {
-            "id": c.id,
-            "user": {'id': c.user.id,
-                     'first_name': c.user.first_name
-                     } if c.user is not None else None,
-            "title": c.title,
-            "text": c.text,
-            "rate": c.rate
+        return HttpResponse(content=json.dumps(context),
+                            content_type='application/json')
 
-        }
-    return HttpResponse(content=json.dumps(context), content_type='application/json')
+    else:
+        form = ProductCommentModelForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.product_id = pk
+            comment.save()
+            context = comment.to_dict()
+            return HttpResponse(content=json.dumps(context),
+                                content_type='application/json')
+        else:
+            return HttpResponse(content=json.dumps({'message': "error"}),
+                                content_type='application/json', status=400)
+
+
+@api_view(["POST", "GET"])
+def comment_api_response_rest(request, pk):
+    if request.method == 'GET':
+        comments = Comment.objects.filter(product_id=pk).select_related('user')
+        serializer = CommentModelSerializer(instance=comments, many=True)
+        return Response(data=serializer.data)
+    else:
+        serializer = CommentModelSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(data=serializer.data, status=201)

@@ -131,6 +131,17 @@ class Comment(models.Model):
     def __str__(self):
         return f'comment on {self.product.name}'
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user": {'id': self.user.id,
+                     'first_name': self.user.first_name
+                     }if self.user is not None else None,
+            "title": self.title,
+            "text": self.text,
+            "rate": self.rate
+        }
+
 
 class Image(models.Model):
     name = models.CharField(_("Name"), max_length=50)

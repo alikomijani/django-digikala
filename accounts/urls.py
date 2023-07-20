@@ -1,7 +1,8 @@
 
-from django.urls import path
+from django.urls import path, include
 from .views import login_view, user_register_view, user_info_view,\
-    logout_view, user_comments_view, MyLoginView, get_users_list, UserUpdateView
+    logout_view, user_comments_view, MyLoginView, get_users_list,\
+    UserUpdateView
 
 
 app_name = 'accounts'
