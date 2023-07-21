@@ -136,7 +136,7 @@
     const response  = await fetch("{% url 'products:comment_api'  pk=product.id  %}")
     const data = await response.json()
     const root = document.getElementById('comment-list')
-      for(item of data.result){
+      for(item of data){
         root.innerHTML += (`<div class="col-12">
           <div>${item.title}</div> 
           <div>${item.text}<div> 
@@ -150,13 +150,14 @@
       event.preventDefault()
       const form_data = new FormData(event.target)
       const js_data= Object.fromEntries(form_data.entries())
-      console.log(js_data)
       const res = await fetch("{% url 'products:comment_api'  pk=product.id  %}" , {
         headers: {
           "X-CSRFToken": "{{csrf_token}}",
           'Accept': 'application/json',
           'Content-Type': 'application/json;charset=UTF-8'
+          
         },
+        credentials: "same-origin",
         method:"POST",
         body: JSON.stringify(js_data)
       })
