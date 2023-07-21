@@ -42,6 +42,8 @@ class Product(models.Model):
                                      through='SellerProductPrice')
     is_active = models.BooleanField(_("is active"), default=True)
     objects = NoDeleteManager()
+    liked_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name='liked_products')
 
     @property
     def default_image(self):
