@@ -1,8 +1,9 @@
-from typing import Dict, Tuple
+
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
 from django.conf import settings
+from .validators import validate_rate
 
 
 class Brand(models.Model):
@@ -117,7 +118,8 @@ class Comment(models.Model):
                                 verbose_name=_("Product"),
                                 on_delete=models.CASCADE,
                                 )
-    rate = models.PositiveSmallIntegerField(_("Rate"))
+    rate = models.PositiveSmallIntegerField(
+        _("Rate"), validators=[validate_rate])
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("user"),
