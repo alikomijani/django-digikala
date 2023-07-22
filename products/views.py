@@ -14,6 +14,15 @@ from .serializer import CommentModelSerializer
 # Create your views here.
 
 
+def basket_cart_view(request):
+    """Simple View to Order a Product for an User in Basket Cart"""
+
+    user, product = request.user, Product.objects.first()
+    print(user.balance)
+    print(product.default_product_seller.price)
+    return HttpResponse("Successfully")
+
+
 def product_list_view(request):
     page = int(request.GET.get('page', 1))
     query = Product.objects.all()

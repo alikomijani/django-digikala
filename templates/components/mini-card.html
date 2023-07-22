@@ -106,7 +106,10 @@
             </div>
         </li>
     </ul>
-    <button class="checkout">
+    <button
+        class="checkout"
+        onclick="window.location.href = '{% url 'products:basket-cart' %}'"
+    >
         ثبت سفارش <i class="fas fa-credit-card"></i>
     </button>
 </nav>
