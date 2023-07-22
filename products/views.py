@@ -1,4 +1,6 @@
 from typing import Any
+from django.db.models import F
+from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
@@ -17,9 +19,11 @@ from .serializer import CommentModelSerializer
 def basket_cart_view(request):
     """Simple View to Order a Product for an User in Basket Cart"""
 
-    user, product = request.user, Product.objects.first()
-    print(user.balance)
-    print(product.default_product_seller.price)
+    user, product = request.user, Product.objects.first().default_product_seller
+    user.balance -= 100 * product.price
+    product.inventory -= 100
+    user.save()
+    product.save()
     return HttpResponse("Successfully")
 
 

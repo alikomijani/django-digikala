@@ -25,7 +25,7 @@ class UserAdmin(BaseUserAdmin):
             ),
         }),
         (_('Personal info'), {
-            "fields": ('first_name', 'last_name')
+            "fields": ('first_name', 'last_name', 'balance')
         }),
         (_('Permissions'), {
             "fields": ('is_staff', 'is_active', 'is_superuser',
