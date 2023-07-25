@@ -20,7 +20,7 @@ from .serializer import CommentModelSerializer
 def basket_cart_view(request):
     """Simple View to Order a Product for an User in Basket Cart"""
 
-    user, product = request.user, Product.objects.first().default_product_seller
+    user, product = request.user, Product.objects.filter(id=1).select_for_update().first().default_product_seller
     # Product.objects.filter(pk=1).update(inventory=F("inventory") - 100)
     # products = Product.objects.filter(Q(inventory__gte=100) | Q(price__lte=100_000))
     user.balance -= 100 * product.price
