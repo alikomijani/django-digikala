@@ -1,6 +1,6 @@
 from typing import Any
 from django.db.models import F, Q
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from products.forms import ProductCommentModelForm
@@ -16,6 +16,7 @@ from .serializer import CommentModelSerializer
 # Create your views here.
 
 
+# @transaction.atomic()
 def basket_cart_view(request):
     """Simple View to Order a Product for an User in Basket Cart"""
 
@@ -24,8 +25,13 @@ def basket_cart_view(request):
     # products = Product.objects.filter(Q(inventory__gte=100) | Q(price__lte=100_000))
     user.balance -= 100 * product.price
     product.inventory -= 100
-    user.save()
-    product.save()
+    try:
+        with transaction.atomic():
+            user.save()
+            product.save()
+    except IntegrityError:
+        return HttpResponse("not Successfully")
+
     return HttpResponse("Successfully")
 
 
