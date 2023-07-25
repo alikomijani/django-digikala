@@ -59,6 +59,10 @@ class User(AbstractBaseUser, PermissionsMixin,):
         ),
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    balance = models.PositiveBigIntegerField(
+        verbose_name=_("Balance of Bank Account"),
+        help_text=_("Please Enter the Balance Amount of this User into the Bank"),
+    )
 
     objects = UserManager()
 

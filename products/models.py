@@ -220,6 +220,10 @@ class SellerProductPrice(models.Model):
     seller = models.ForeignKey(
         "sellers.Seller", verbose_name=_("Seller"), on_delete=models.CASCADE)
     price = models.PositiveIntegerField(_("Price"))
+    inventory = models.PositiveBigIntegerField(
+        verbose_name=_("Number of Inventory"),
+        help_text=_("Please Enter the Number of this Product Item into the Stock"),
+    )
     discount = models.PositiveSmallIntegerField(_("Discount"), default=0)
     create_at = models.DateTimeField(
         _("create at"), auto_now=False, auto_now_add=True)
