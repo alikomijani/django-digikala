@@ -4,3 +4,4 @@ djlint
 djangorestframework==3.14.0
 markdown
 django-filter
+psycopg2-binary==2.9.6
