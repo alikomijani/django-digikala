@@ -1,19 +1,25 @@
-
 from django.urls import path, include
-from .views import login_view, user_register_view, user_info_view,\
-    logout_view, user_comments_view, MyLoginView, get_users_list,\
-    UserUpdateView
-from .api import user_change_password, user_info, user_register
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
+from .views import (
+    UserRegisterView,
+    UserProfileViewSet,
+    OTPRequestView,
+    OTPLoginView,
+)
 
-app_name = 'accounts'
+router = DefaultRouter()
+router.register(r"user-profile", UserProfileViewSet, basename="user-profile")
+
 urlpatterns = [
-    path('login/', MyLoginView.as_view(), name='login_view'),
-    path('register/', user_register_view, name='register_view'),
-    path('profile/', UserUpdateView.as_view(), name='user_info_view'),
-    path('profile/comments', user_comments_view, name='user_comments_view'),
-    path('logout/', logout_view, name='user_logout_view'),
-    path('users-list/', get_users_list, name='users_list'),
-    path('api/change-password/', user_change_password, name='api-password-change'),
-    path('api/user-info/', user_info, name='api-user-info'),
-    path('api/register/', user_register, name='api-register'),
+    # User registration
+    path("register/", UserRegisterView.as_view(), name="user-register"),
+    # OTP login system
+    path("otp/request/", OTPRequestView.as_view(), name="otp-request"),
+    path("otp/verify/", OTPLoginView.as_view(), name="otp-login"),
+    # Include viewset routes
+    path("", include(router.urls)),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

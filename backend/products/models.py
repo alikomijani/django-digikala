@@ -1,53 +1,86 @@
-
 from django.db import models
 from django.utils.translation import gettext as _
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.conf import settings
-from .validators import validate_rate
-
-
-class Brand(models.Model):
-    name = models.CharField(_("Name"), max_length=150)
-    en_name = models.CharField(_("English Name"), max_length=150)
-    slug = models.SlugField(_("slug"))
-
-    def __str__(self) -> str:
-        return self.slug
+from sellers.models import SellerProductPrice
+from uploads.models import Image
 
 
 class MyQuerySet(models.QuerySet):
     def delete(self):
         return self.update(is_active=False)
 
+    def active(self):
+        return self.filter(is_active=True)
+
 
 class NoDeleteManager(models.Manager):
     def get_queryset(self):
         return MyQuerySet(self.model, using=self._db)
 
+    def active(self):
+        return self.get_queryset().active()
+
 
 class Product(models.Model):
-    name = models.CharField(_("Persian Name"), max_length=200)
+    name = models.CharField(_("Persian Name"), max_length=200, db_index=True)
     en_name = models.CharField(_("English Name"), max_length=200)
     description = models.TextField(_("Description"))
-    category = models.ForeignKey("Category",
-                                 verbose_name=_("Category"),
-                                 on_delete=models.RESTRICT
-                                 )
-    brand = models.ForeignKey("Brand", verbose_name=_("Brand"),
-                              on_delete=models.SET_NULL,
-                              null=True,
-                              blank=True)
-    sellers = models.ManyToManyField("sellers.Seller",
-                                     verbose_name=_("Sellers"),
-                                     through='SellerProductPrice')
+    category = models.ForeignKey(
+        "categories.Category",
+        verbose_name=_("Category"),
+        on_delete=models.RESTRICT,
+        related_name="products",
+    )
+    brand = models.ForeignKey(
+        "categories.Brand",
+        verbose_name=_("Brand"),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="products",
+    )
+    sellers = models.ManyToManyField(
+        "sellers.Seller",
+        verbose_name=_("Sellers"),
+        through="sellers.SellerProductPrice",
+        related_name="products",
+    )
     is_active = models.BooleanField(_("is active"), default=True)
+
     objects = NoDeleteManager()
+
     liked_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name='liked_products')
+        settings.AUTH_USER_MODEL,
+        through="ProductLike",
+        related_name="liked_products",
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
+        indexes = [
+            models.Index(fields=["category", "is_active"]),
+            models.Index(fields=["brand", "is_active"]),
+        ]
 
     @property
     def default_image(self):
-        return self.image_set.filter(is_default=True).first()
+        """Get the default image for this product"""
+        content_type = ContentType.objects.get_for_model(self)
+        return Image.objects.filter(
+            content_type=content_type, object_id=self.id, is_default=True
+        ).first()
+
+    @property
+    def all_images(self):
+        """Get all images for this product"""
+        content_type = ContentType.objects.get_for_model(self)
+        return Image.objects.filter(
+            content_type=content_type, object_id=self.id
+        ).order_by("-is_default", "created_at")
 
     def delete(self, using=None, keep_parents=None):
         self.is_active = False
@@ -56,27 +89,118 @@ class Product(models.Model):
 
     @property
     def categories_list(self):
-        category_list = []
-        current_category = self.category
-        while current_category.parent is not None:
-            category_list.append(current_category)
-            current_category = current_category.parent
-        category_list.append(current_category)
-        category_list.reverse()
-        return category_list
+        """Get category hierarchy for this product"""
+        return self.category.get_hierarchy()
+
+    @property
+    def category_breadcrumb(self):
+        """Get category breadcrumb path"""
+        return self.category.get_breadcrumb_path()
+
+    def get_latest_seller_prices(self):
+        """Get latest price for each seller using Django ORM"""
+        from django.db.models import OuterRef, Subquery
+
+        # Subquery to get the latest update_at for each seller
+        latest_prices = (
+            SellerProductPrice.objects.filter(product=self, seller=OuterRef("seller"))
+            .order_by("-update_at")
+            .values("id")[:1]
+        )
+
+        # Get the actual SellerProductPrice objects
+        return SellerProductPrice.objects.filter(
+            id__in=Subquery(latest_prices)
+        ).select_related("seller")
 
     @property
     def sellers_last_price(self):
+        """Get latest price for each seller - works across all databases"""
+        return self.get_latest_seller_prices()
+
+    def get_latest_seller_prices_alternative(self):
+        """Alternative method using window functions (PostgreSQL, MySQL 8.0+, SQLite 3.25+)"""
+        from django.db.models import Window, F
+        from django.db.models.functions import RowNumber
+
+        return (
+            SellerProductPrice.objects.filter(product=self)
+            .annotate(
+                row_number=Window(
+                    expression=RowNumber(),
+                    partition_by=["seller"],
+                    order_by=F("update_at").desc(),
+                )
+            )
+            .filter(row_number=1)
+            .select_related("seller")
+        )
+
+    def get_latest_seller_prices_raw_sqlite(self):
+        """Raw SQL version that works specifically with SQLite"""
         return SellerProductPrice.objects.raw(
-            """select * from products_sellerproductprice 
-            where product_id = %(id)s
-            group by seller_id
-            having Max(update_at)""", {"id": self.id})
+            """
+            SELECT * FROM products_sellerproductprice p1
+            WHERE p1.product_id = %s
+            AND p1.update_at = (
+                SELECT MAX(p2.update_at) 
+                FROM products_sellerproductprice p2 
+                WHERE p2.product_id = p1.product_id 
+                AND p2.seller_id = p1.seller_id
+            )
+        """,
+            [self.id],
+        )
+
+    def get_latest_seller_prices_raw_universal(self):
+        """Raw SQL that works across most databases"""
+        from django.db import connection
+
+        if "sqlite" in connection.vendor:
+            # SQLite version
+            query = """
+                SELECT * FROM products_sellerproductprice p1
+                WHERE p1.product_id = %s
+                AND p1.update_at = (
+                    SELECT MAX(p2.update_at) 
+                    FROM products_sellerproductprice p2 
+                    WHERE p2.product_id = p1.product_id 
+                    AND p2.seller_id = p1.seller_id
+                )
+                ORDER BY p1.seller_id
+            """
+        else:
+            # PostgreSQL, MySQL, etc.
+            query = """
+                SELECT DISTINCT ON (seller_id) *
+                FROM products_sellerproductprice
+                WHERE product_id = %s
+                ORDER BY seller_id, update_at DESC
+            """
+
+        return SellerProductPrice.objects.raw(query, [self.id])
 
     @property
     def default_product_seller(self):
-        if (self.sellers_last_price):
-            return self.sellers_last_price[0]
+        latest_prices = self.sellers_last_price
+        if latest_prices:
+            return latest_prices[0]
+        return None
+
+    @property
+    def min_price(self):
+        """Get minimum price among all sellers"""
+        latest_prices = self.sellers_last_price
+        if latest_prices:
+            return min(price.discounted_price for price in latest_prices)
+        return None
+
+    @property
+    def max_price(self):
+        """Get maximum price among all sellers"""
+        latest_prices = self.sellers_last_price
+        if latest_prices:
+            return max(price.discounted_price for price in latest_prices)
         return None
 
     def __str__(self):
@@ -86,152 +210,37 @@ class Product(models.Model):
         return reverse("product_detail", kwargs={"pk": self.pk})
 
 
-class Category(models.Model):
-    name = models.CharField(_("Name"), max_length=50)
-    slug = models.SlugField(_("Slug"), unique=True, db_index=True)
-    description = models.TextField(_("Description"))
-    icon = models.ImageField(
-        _("Icon"), upload_to='category_images', null=True, blank=True)
-    image = models.ImageField(
-        _("Image"), upload_to='category_images', null=True, blank=True)
-    parent = models.ForeignKey("self",
-                               verbose_name=_("Parent Category"),
-                               on_delete=models.SET_NULL,
-                               null=True,
-                               blank=True
-                               )
-
-    @property
-    def children(self):
-        return self.category_set.all()
+class ProductLike(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = _("Category")
-        verbose_name_plural = _("Categories")
-
-    def __str__(self) -> str:
-        return self.slug
-
-
-class Comment(models.Model):
-    title = models.CharField(_("Title"), max_length=150)
-    text = models.TextField(_("Text"))
-    product = models.ForeignKey("Product",
-                                verbose_name=_("Product"),
-                                on_delete=models.CASCADE,
-                                )
-    rate = models.PositiveSmallIntegerField(
-        _("Rate"), validators=[validate_rate])
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("user"),
-        null=True,
-        on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = _("Comment")
-        verbose_name_plural = _("Comments")
-
-    def __str__(self):
-        return f'comment on {self.product.name}'
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "user": {'id': self.user.id,
-                     'first_name': self.user.first_name
-                     }if self.user is not None else None,
-            "title": self.title,
-            "text": self.text,
-            "rate": self.rate
-        }
-
-
-class Image(models.Model):
-    name = models.CharField(_("Name"), max_length=50)
-    alt = models.CharField(_("Alternative Text"), max_length=100)
-    product = models.ForeignKey("Product",
-                                verbose_name=_("Product"),
-                                on_delete=models.CASCADE)
-    image = models.ImageField(_("Image"), upload_to='products',)
-    is_default = models.BooleanField(_("Is default image?"), default=False)
-
-    class Meta:
-        verbose_name = _("Image")
-        verbose_name_plural = _("Images")
-
-    def __str__(self):
-        return self.name
-
-
-class Question(models.Model):
-    text = models.TextField(_("Question"))
-    user_email = models.EmailField(_("Email"), max_length=254)
-    product = models.ForeignKey("Product",
-                                verbose_name=_("Product"),
-                                on_delete=models.CASCADE
-                                )
-
-    class Meta:
-        verbose_name = _("Question")
-        verbose_name_plural = _("Questions")
-
-    def __str__(self):
-        return self.text
-
-
-class Answer(models.Model):
-    text = models.TextField(_("Answer"))
-    question = models.ForeignKey("Question",
-                                 verbose_name=_("Question"),
-                                 on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = _("Answer")
-        verbose_name_plural = _("Answers")
-
-    def __str__(self):
-        return self.text
+        unique_together = ("user", "product")
+        indexes = [
+            models.Index(fields=["product", "user"]),
+        ]
 
 
 class ProductOption(models.Model):
-    product = models.ForeignKey("Product",
-                                verbose_name=_("Product"),
-                                on_delete=models.CASCADE,
-                                related_name='product_options'
-                                )
-    name = models.CharField(_("Attribute"), max_length=200)
+    product = models.ForeignKey(
+        "Product",
+        verbose_name=_("Product"),
+        on_delete=models.CASCADE,
+        related_name="product_options",
+    )
+    attribute = models.ForeignKey(
+        "categories.CategoryAttribute", on_delete=models.CASCADE
+    )
+
     value = models.CharField(_("Value"), max_length=200)
 
     class Meta:
         verbose_name = _("ProductOption")
         verbose_name_plural = _("ProductOptions")
+        unique_together = ["product", "attribute"]
+        indexes = [
+            models.Index(fields=["attribute", "value"]),
+        ]
 
     def __str__(self):
-        return f'{self.product.name} {self.name}'
-
-
-class SellerProductPrice(models.Model):
-    product = models.ForeignKey("Product",
-                                verbose_name=_("Product"),
-                                related_name='seller_prices',
-                                on_delete=models.CASCADE
-                                )
-    seller = models.ForeignKey(
-        "sellers.Seller", verbose_name=_("Seller"), on_delete=models.CASCADE)
-    price = models.PositiveIntegerField(_("Price"))
-    discount = models.PositiveSmallIntegerField(_("Discount"), default=0)
-    create_at = models.DateTimeField(
-        _("create at"), auto_now=False, auto_now_add=True)
-    update_at = models.DateTimeField(
-        _("create at"), auto_now=True,)
-
-    @property
-    def discounted_price(self):
-        if self.discount > 0:
-            return int(self.price - (self.discount * self.price / 100))
-        return self.price
-
-    class Meta:
-        verbose_name = _("Seller Product Price")
-        verbose_name_plural = _("Seller Product Prices")
+        return f"{self.product.name} - {self.attribute.name}: {self.value}"

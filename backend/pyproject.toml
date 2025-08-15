@@ -1,0 +1,31 @@
+[project]
+name = "digikala"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Ali Komijani",email = "a.komijani@wallex.net"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "djangorestframework (>=3.16.0,<4.0.0)",
+    "pillow (>=11.2.1,<12.0.0)",
+    "django-filter (>=25.1,<26.0)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "ipython (>=9.3.0,<10.0.0)",
+    "django-debug-toolbar (>=5.2.0,<6.0.0)",
+    "markdown (>=3.8,<4.0)",
+    "black (>=25.1.0,<26.0.0)",
+    "autopep8 (>=2.3.2,<3.0.0)",
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)"
+]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+django = "5.2.2"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
